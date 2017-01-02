@@ -2,16 +2,23 @@
 
 CONCATVCF_PREREQ = `{./targets}
 
-results/concatVCF/$CONCATVCF_NAME.vcf.gz:D:		$CONCATVCF_PREREQ
+results/concatVCF/$CONCATVCF_NAME.vcf.gz:D:	$CONCATVCF_PREREQ
 	mkdir -p `dirname $target`
-	bcftools $(echo $prereq | sed -e 's#\.tbi##g') \
-	| bgzip -c > $target
+	bcftools concat $(echo $prereq | sed -e 's#\.tbi##g') \
+		| bgzip -c > $target.build \
+	&& mv $target.build $target	
 
 data/%.vcf.gz:	data/%.vcf
 	bgzip $prereq
 
-data/%.sorted.vcf.gz:	data/%.vcf.gz
-	vcf-sort $prereq $target
+results/sortindex/%.sorted.vcf.gz:	data/%.vcf.gz
+	mkdir -p `dirname $target`
+	zcat $prereq \
+		| vcf-sort \
+		| bgzip -c \
+		> $target.build \
+	&& mv $target.build $target
 
-data/%.sorted.vcf.gz.tbi:	data/%sorted.vcf.gz
+results/sortindex/%.sorted.vcf.gz.tbi:	results/sortindex/%sorted.vcf.gz
+	mkdir -p `dirname $target`
 	tabix -p vcf $prereq
