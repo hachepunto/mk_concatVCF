@@ -1,0 +1,6 @@
+#!/bin/bash 
+
+find -L data/ \
+	-name '*.sorted.vcf.gz' \
+	-o -name '*.vcf.gz' \
+	-o -name '*.vcf'

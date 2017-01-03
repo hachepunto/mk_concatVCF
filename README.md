@@ -1,2 +1,2 @@
 # mk_concatVCF
-Sort and concat VCFs usin bcftools
+Concatenate VCFs (previously [sorted and index](https://github.com/hachepunto/sortindexvcf)) using bcftools
