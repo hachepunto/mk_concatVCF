@@ -1,10 +1,12 @@
-<mk_concatVCF.mk
+<config.mk
 
-CONCATVCF_PREREQ = `{./prereq}
+CONCATVCF_PREREQ = `{./bin/prereq}
 
 results/concatVCF/$CONCATVCF_NAME.vcf.gz:D:	$CONCATVCF_PREREQ
 	mkdir -p `dirname $target`
-	bcftools concat $(echo $prereq) \
-		| bgzip -c > $target.build \
-	&& mv $target.build $target	
-
+	vcf-concat \
+		$prereq \
+	| gzip \
+		-c \
+	> $target.build \
+	&& mv $target.build $target
